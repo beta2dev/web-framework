@@ -1,8 +1,8 @@
 package ru.beta2.wf.components;
 
 import org.apache.commons.io.IOUtils;
-import ru.beta2.wf.flow.FlowContext;
-import ru.beta2.wf.model.Component;
+import ru.beta2.wf.model.component.Component;
+import ru.beta2.wf.model.render.RenderContext;
 
 import java.io.IOException;
 
@@ -29,7 +29,7 @@ public class WebFrameworkJavascript extends Component<Void>
 
     // todo ??? maybe rethink this implementation
     @Override
-    public void render(FlowContext ctx)
+    public void render(RenderContext ctx)
     {
 //        ctx.write("<script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-2.1.1.min.js\"></script>\n");
         ctx.write("<script type=\"text/javascript\">\n" + javascriptCode + "\n</script>");

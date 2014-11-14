@@ -1,11 +1,14 @@
 package ru.beta2.wf.tdd.realapp;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import ru.beta2.wf.actions.LinkActionRenderer;
 import ru.beta2.wf.actions.NavigatePageAction;
 import ru.beta2.wf.components.WebFrameworkJavascript;
-import ru.beta2.wf.flow.FlowContext;
-import ru.beta2.wf.model.*;
-import ru.beta2.wf.render.ComponentWrappingRenderer;
+import ru.beta2.wf.model.flow.FlowContext;
+import ru.beta2.wf.model.component.*;
+import ru.beta2.wf.model.render.ComponentWrappingRenderer;
+import ru.beta2.wf.model.render.Renderer;
+import ru.beta2.wf.model.render.StringRenderer;
 import ru.beta2.wf.tdd.StaticModelComponent;
 import ru.beta2.wf.tdd.StaticModelPage;
 
@@ -22,7 +25,9 @@ public class RealAppBuilder
     {
         Application app = new Application();
         HtmlTemplateRenderer renderer = new HtmlTemplateRenderer("ru.beta2.wf.tdd.realapp");
-        Renderer wrappingRenderer = new ComponentWrappingRenderer(renderer);
+        Renderer<?> wrappingRenderer = new ComponentWrappingRenderer<>(renderer);
+        LinkActionRenderer linkActionRenderer = new LinkActionRenderer();
+        Renderer stringRenderer = new StringRenderer();
 
         Layout<Map<String, Object>> layout = new Layout<Map<String, Object>>() {
             @Override
@@ -45,17 +50,16 @@ public class RealAppBuilder
         layout.addChild(new WebFrameworkJavascript().name("frameworkJavaScript"));
 
         Page<?> p2 = new Page<>("/second-page").name("second-page").layout(layout);
-        p2.addChild(new Component<>().name("secondPageBlock").renderer(renderer), "dummyBlock");
+        p2.addChild(new StaticModelComponent().name("secondPageBlock").renderer(renderer), "dummyBlock");
 
         Page<?> p1 = new StaticModelPage("/first-page")
             .name("first-page")
             .layout(layout);
-//        p1.addChild(new StaticModelComponent()
-//                .put("secondPageLink", p2.getLink())
-//                .id("thisIsFirstPageBlockId").name("firstPageBlock")
-//                .renderer(wrappingRenderer), "dummyBlock");
-        // todo !!! use here
-        p1.addChild(new NavigatePageAction().page(p2).id("thisIsFirstPageBlockId").name("firstPageActionAsBlock").wrap(renderer));
+        NavigatePageAction nav = new NavigatePageAction();
+        nav.page(p2).content("go").id("thisIsFirstPageBlockId").name("firstPageActionAsBlock").wrap(linkActionRenderer);
+        nav.getContent().renderer(stringRenderer); // todo !!! refactore this
+        p1.addChild(new NavigatePageAction().page(p2).content("go").id("thisIsFirstPageBlockId").name("firstPageActionAsBlock")
+                .wrap(linkActionRenderer), "dummyBlock");
 
         app.addPages(p1, p2);
 

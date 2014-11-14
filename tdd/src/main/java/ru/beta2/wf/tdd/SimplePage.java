@@ -1,6 +1,6 @@
 package ru.beta2.wf.tdd;
 
-import ru.beta2.wf.model.Page;
+import ru.beta2.wf.model.component.Page;
 
 /**
  * @author olegn 10.11.2014

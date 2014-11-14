@@ -4,7 +4,10 @@ import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.NameVirtualHostHandler;
 import ru.beta2.wf.flow.ApplicationHttpHandler;
-import ru.beta2.wf.model.*;
+import ru.beta2.wf.model.component.Application;
+import ru.beta2.wf.model.component.Component;
+import ru.beta2.wf.model.component.CompositeComponent;
+import ru.beta2.wf.model.component.Page;
 import ru.beta2.wf.tdd.realapp.RealAppBuilder;
 
 /**

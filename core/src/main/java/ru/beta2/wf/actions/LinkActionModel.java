@@ -1,7 +1,7 @@
 package ru.beta2.wf.actions;
 
-import ru.beta2.wf.model.ActionModel;
-import ru.beta2.wf.model.Renderable;
+import ru.beta2.wf.model.component.ActionModel;
+import ru.beta2.wf.model.render.Renderable;
 
 /**
  * @author olegn 14.11.2014

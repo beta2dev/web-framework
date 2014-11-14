@@ -1,8 +1,7 @@
 package ru.beta2.wf.tdd.realapp;
 
 import org.apache.commons.io.IOUtils;
-import ru.beta2.wf.model.Component;
-import ru.beta2.wf.model.Renderable;
+import ru.beta2.wf.model.render.Renderable;
 import ru.beta2.wf.tdd.TplRenderer;
 
 import java.io.IOException;

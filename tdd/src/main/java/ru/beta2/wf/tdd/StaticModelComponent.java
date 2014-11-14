@@ -1,7 +1,7 @@
 package ru.beta2.wf.tdd;
 
-import ru.beta2.wf.flow.FlowContext;
-import ru.beta2.wf.model.Component;
+import ru.beta2.wf.model.flow.FlowContext;
+import ru.beta2.wf.model.component.Component;
 
 import java.util.HashMap;
 import java.util.Map;

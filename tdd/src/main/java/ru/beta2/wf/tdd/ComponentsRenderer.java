@@ -1,11 +1,10 @@
 package ru.beta2.wf.tdd;
 
-import io.undertow.io.Sender;
-import ru.beta2.wf.flow.FlowContext;
-import ru.beta2.wf.model.Component;
-import ru.beta2.wf.model.CompositeComponent;
-import ru.beta2.wf.model.Renderable;
-import ru.beta2.wf.model.Renderer;
+import ru.beta2.wf.model.component.Component;
+import ru.beta2.wf.model.component.CompositeComponent;
+import ru.beta2.wf.model.render.RenderContext;
+import ru.beta2.wf.model.render.Renderable;
+import ru.beta2.wf.model.render.Renderer;
 
 /**
  * User: Inc
@@ -23,7 +22,7 @@ public class ComponentsRenderer implements Renderer
     }
 
     @Override
-    public void render(Renderable component, FlowContext ctx)
+    public void render(Renderable component, RenderContext ctx)
     {
         ctx.write("<" + name + ">");
         if (component instanceof CompositeComponent) {

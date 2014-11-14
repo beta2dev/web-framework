@@ -4,8 +4,11 @@ import io.undertow.server.DefaultResponseListener;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.PathTemplateHandler;
-import ru.beta2.wf.model.Application;
-import ru.beta2.wf.model.Page;
+import ru.beta2.wf.model.component.Application;
+import ru.beta2.wf.model.component.Page;
+import ru.beta2.wf.model.flow.FlowContext;
+import ru.beta2.wf.model.render.OutputBuffer;
+import ru.beta2.wf.model.render.RenderContext;
 import ru.beta2.wf.util.AbstractAttachable;
 
 import java.io.IOException;
@@ -76,7 +79,7 @@ class StatusCodeListener implements DefaultResponseListener
     }
 }
 
-class FlowContextImpl extends AbstractAttachable implements FlowContext
+class FlowContextImpl extends AbstractAttachable implements RenderContext
 {
 
     // todo !!! implement nesting output buffers
