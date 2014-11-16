@@ -4,9 +4,9 @@ import io.undertow.server.DefaultResponseListener;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.PathTemplateHandler;
-import ru.beta2.wf.model.component.Application;
-import ru.beta2.wf.model.component.Page;
-import ru.beta2.wf.model.flow.FlowContext;
+import ru.beta2.wf.model.flow.Command;
+import ru.beta2.wf.model.flow.Dispatch;
+import ru.beta2.wf.model.flow.FlowController;
 import ru.beta2.wf.model.render.OutputBuffer;
 import ru.beta2.wf.model.render.RenderContext;
 import ru.beta2.wf.util.AbstractAttachable;
@@ -15,9 +15,11 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
+ * todo !!! refactore this into separate module (undertow-specific)
  * @author olegn 09.11.2014
  */
 public class ApplicationHttpHandler implements HttpHandler
@@ -30,15 +32,15 @@ public class ApplicationHttpHandler implements HttpHandler
     // todo DEFFERED handle if pathTemplate and statusCode both are null
     // todo DEFFERED handle if pathTemplate and statusCode both are set
 
-    public ApplicationHttpHandler(Application app)
+    private final FlowController ctl;
+
+    public ApplicationHttpHandler(FlowController ctl, List<Command> commands)
     {
-        for (Page<?> p : app.getPages()) {
-            if (p.getPathTemplate().isPresent()) {
-                pathTemplateHandler.add(p.getPathTemplate().get(), (e)->p.render(new FlowContextImpl(e)));
-            }
-            if (p.getStatusCode().isPresent()) {
-                statusCodeListener.addRequestHandler(p.getStatusCode().get(), (e)->p.render(new FlowContextImpl(e)));
-            }
+        this.ctl = ctl;
+
+        for (Command cmd : commands) {
+            System.out.println("COMMAND: " + cmd.getDispatch());
+            registerDispatch(cmd, cmd.getDispatch());
         }
     }
 
@@ -49,6 +51,22 @@ public class ApplicationHttpHandler implements HttpHandler
         exchange.startBlocking();
         pathTemplateHandler.handleRequest(exchange);
         exchange.endExchange();
+    }
+
+    // todo DEFFERED TEST composite dispatch
+    private void registerDispatch(Command cmd, Dispatch d)
+    {
+        if (d.is(Dispatch.PathTemplate.class)) {
+            pathTemplateHandler.add(d.as(Dispatch.PathTemplate.class).get(), (e)->ctl.run(cmd, new RenderContextImpl(e)));
+        }
+        if (d.is(Dispatch.StatusCode.class)) {
+            statusCodeListener.addRequestHandler(d.as(Dispatch.StatusCode.class).get(), (e)->ctl.run(cmd, new RenderContextImpl(e)));
+        }
+        if (d.is(Dispatch.Composite.class)) {
+            for (Dispatch d0 : d.as(Dispatch.Composite.class).get()) {
+                registerDispatch(cmd, d0);
+            }
+        }
     }
 }
 
@@ -79,7 +97,7 @@ class StatusCodeListener implements DefaultResponseListener
     }
 }
 
-class FlowContextImpl extends AbstractAttachable implements RenderContext
+class RenderContextImpl extends AbstractAttachable implements RenderContext
 {
 
     // todo !!! implement nesting output buffers
@@ -88,7 +106,7 @@ class FlowContextImpl extends AbstractAttachable implements RenderContext
 
     private OutputBufferImpl buffer;
 
-    FlowContextImpl(HttpServerExchange exchange)
+    RenderContextImpl(HttpServerExchange exchange)
     {
         this.exchange = exchange;
     }

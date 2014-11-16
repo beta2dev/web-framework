@@ -1,5 +1,6 @@
 package ru.beta2.wf.tdd;
 
+import ru.beta2.wf.model.flow.Dispatch;
 import ru.beta2.wf.model.flow.FlowContext;
 import ru.beta2.wf.model.component.Page;
 
@@ -18,13 +19,13 @@ class TemplatePage extends Page<Map<String,Object>>
 
     public TemplatePage(String pathTemplate, String template)
     {
-        super(pathTemplate);
+        dispatch(pathTemplate);
         renderer(new TplRenderer(template));
     }
 
     public TemplatePage(int statusCode, String template)
     {
-        super(statusCode);
+        dispatch(Dispatch.statusCode(statusCode));
         renderer(new TplRenderer(template));
     }
 
@@ -40,7 +41,7 @@ class TemplatePage extends Page<Map<String,Object>>
     }
 
     @Override
-    protected Class<? super Map<String, Object>> getModelClass()
+    public Class<? super Map<String, Object>> getModelClass()
     {
         return Map.class;
     }

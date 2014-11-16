@@ -15,7 +15,7 @@ import java.util.Map;
 * Date: 10.11.2014
 * Time: 18:22
 */
-public class TplRenderer implements Renderer<Map<String, Object>>
+public class TplRenderer implements Renderer<Map<String, Object>, Renderable<Map<String, Object>>>
 {
     private final String template;
 

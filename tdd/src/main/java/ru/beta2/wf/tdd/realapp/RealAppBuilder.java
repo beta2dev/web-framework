@@ -23,15 +23,14 @@ public class RealAppBuilder
 
     public Application create()
     {
-        Application app = new Application();
+        Application app = new Application().name("RealApp");
         HtmlTemplateRenderer renderer = new HtmlTemplateRenderer("ru.beta2.wf.tdd.realapp");
-        Renderer<?> wrappingRenderer = new ComponentWrappingRenderer<>(renderer);
         LinkActionRenderer linkActionRenderer = new LinkActionRenderer();
         Renderer stringRenderer = new StringRenderer();
 
         Layout<Map<String, Object>> layout = new Layout<Map<String, Object>>() {
             @Override
-            protected Class<? super Map<String, Object>> getModelClass()
+            public Class<? super Map<String, Object>> getModelClass()
             {
                 return Map.class;
             }
@@ -49,14 +48,16 @@ public class RealAppBuilder
 
         layout.addChild(new WebFrameworkJavascript().name("frameworkJavaScript"));
 
-        Page<?> p2 = new Page<>("/second-page").name("second-page").layout(layout);
+        Page<?> p2 = new Page<>().dispatch("/second-page").name("second-page").layout(layout);
         p2.addChild(new StaticModelComponent().name("secondPageBlock").renderer(renderer), "dummyBlock");
 
         Page<?> p1 = new StaticModelPage("/first-page")
             .name("first-page")
             .layout(layout);
         NavigatePageAction nav = new NavigatePageAction();
-        nav.page(p2).content("go").id("thisIsFirstPageBlockId").name("firstPageActionAsBlock").wrap(linkActionRenderer);
+        nav.page(p2).content("go").id("thisIsFirstPageBlockId").name("firstPageActionAsBlock")
+                .renderer(linkActionRenderer)
+                .wrap(linkActionRenderer);
         nav.getContent().renderer(stringRenderer); // todo !!! refactore this
         p1.addChild(new NavigatePageAction().page(p2).content("go").id("thisIsFirstPageBlockId").name("firstPageActionAsBlock")
                 .wrap(linkActionRenderer), "dummyBlock");

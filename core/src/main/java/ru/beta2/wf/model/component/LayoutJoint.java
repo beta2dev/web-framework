@@ -8,6 +8,7 @@ import ru.beta2.wf.util.AbstractAttachable;
 import java.util.Map;
 
 /**
+ * todo !!! refactore out this LayoutJoint
  * User: Inc
  * Date: 12.11.2014
  * Time: 23:17

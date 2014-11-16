@@ -10,5 +10,9 @@ import ru.beta2.wf.model.build.BuildStage;
 public abstract class AbstractStage implements BuildStage
 {
 
-
+    @Override
+    public boolean isPassed()
+    {
+        return true;
+    }
 }

@@ -1,64 +1,30 @@
 package ru.beta2.wf.model.component;
 
+import ru.beta2.wf.model.flow.Dispatch;
+import ru.beta2.wf.model.flow.Dispatched;
 import ru.beta2.wf.model.render.RenderContext;
+import ru.beta2.wf.model.render.Renderable;
 import ru.beta2.wf.model.render.Renderer;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * 09.11.2014
  * olegn
  */
-public class Page<M> extends CompositeComponent<M>
+public class Page<M> extends CompositeComponent<M> implements Dispatched
 {
 
-    private final Optional<String> pathTemplate;
-
-    /**
-     * Привязка страницы к конкретному статус-коду (при этом можем сделать еще с учетом pathTemplate).
-     */
-    private final Optional<Integer> statusCode;
+    private Dispatch dispatch;
 
     private LayoutJoint<?> layoutJoint;
 
     private Map<String, Component<?>> layoutBindings;
 
-    // todo !!! on verify phase check that
+    // todo !!! on verify phase check that dispatch exists
 
-    public Page()
-    {
-        this(Optional.empty(), Optional.empty()); // todo !!! refactore (??? and maybe not use optional ?)
-    }
 
-    // todo ??? maybe move into setter
-    public Page(String pathTemplate)
-    {
-        this(Optional.empty(), Optional.of(pathTemplate));
-    }
-
-    // todo ??? maybe move into setter
-    public Page(int statusCode)
-    {
-        this(Optional.of(statusCode), Optional.empty());
-    }
-
-    private Page(Optional<Integer> statusCode, Optional<String> pathTemplate)
-    {
-        this.statusCode = statusCode;
-        this.pathTemplate = pathTemplate;
-    }
-
-    public Optional<String> getPathTemplate()
-    {
-        return pathTemplate;
-    }
-
-    public Optional<Integer> getStatusCode()
-    {
-        return statusCode;
-    }
 
     // todo !!! еще нам нужно как-то смоделировать, что при навигации между страницами только часть блоков по идее должна быть перерисована (то есть нужно ввести некую иерархию композиции страниц)
     public Page<M> layout(Layout<?> layout)
@@ -91,13 +57,51 @@ public class Page<M> extends CompositeComponent<M>
     }
 
     @Override
+    public Renderer<M, Renderable<M>> getRenderer()
+    {
+        if (layoutJoint != null) {
+            return layoutJoint.render(ctx);
+        }
+        else {
+            super.render(ctx);
+        }
+    }
+
+    @Override
     public void accept(ComponentVisitor visitor)
     {
         visitor.visit(this);
         acceptChildren(visitor);
     }
 
-//
+    //
+    //  Dispatch
+    //
+
+    @Override
+    public Dispatch getDispatch()
+    {
+        return dispatch;
+    }
+
+    public void setDispatch(Dispatch dispatch)
+    {
+        this.dispatch = dispatch;
+    }
+
+    public Page<M> dispatch(Dispatch dispatch)
+    {
+        setDispatch(dispatch);
+        return this;
+    }
+
+    public Page<M> dispatch(String pathTemplate)
+    {
+        setDispatch(Dispatch.pathTemplate(pathTemplate));
+        return this;
+    }
+
+    //
     //  Links
     //
 
@@ -108,7 +112,7 @@ public class Page<M> extends CompositeComponent<M>
      */
     public String getLink()
     {
-        return pathTemplate.get(); // todo !!! check if pathTemplate is not set
+        return dispatch.as(Dispatch.PathTemplate.class).get(); // todo !!! check if pathTemplate is not set
     }
 
     //
@@ -135,4 +139,5 @@ public class Page<M> extends CompositeComponent<M>
         super.child(component);
         return this;
     }
+
 }

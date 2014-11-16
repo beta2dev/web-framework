@@ -1,7 +1,6 @@
 package ru.beta2.wf.model.build;
 
 import ru.beta2.wf.model.flow.Command;
-import ru.beta2.wf.util.Attachable;
 
 import java.util.List;
 
@@ -10,7 +9,13 @@ import java.util.List;
  * Date: 14.11.2014
  * Time: 20:40
  */
-public interface BuildResult extends Attachable
+public interface BuildResult
 {
+    List<String> getWarnings();
+
+    List<String> getErrors();
+
+    boolean isPassed();
+
     List<Command> getCommands();
 }

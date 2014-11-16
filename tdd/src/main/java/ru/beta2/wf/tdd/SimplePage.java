@@ -1,6 +1,7 @@
 package ru.beta2.wf.tdd;
 
 import ru.beta2.wf.model.component.Page;
+import ru.beta2.wf.model.flow.Dispatch;
 
 /**
  * @author olegn 10.11.2014
@@ -9,13 +10,13 @@ public class SimplePage extends Page
 {
     public SimplePage(String pathTemplate, String body)
     {
-        super(pathTemplate);
+        dispatch(pathTemplate);
         assignRenderer(body);
     }
 
     public SimplePage(int statusCode, String body)
     {
-        super(statusCode);
+        dispatch(Dispatch.statusCode(statusCode));
         assignRenderer(body);
     }
 

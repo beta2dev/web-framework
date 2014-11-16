@@ -5,7 +5,7 @@ package ru.beta2.wf.model.render;
  * Date: 14.11.2014
  * Time: 19:11
  */
-public class StringRenderer implements Renderer<String>
+public class StringRenderer implements Renderer<String, Renderable<String>>
 {
     @Override
     public void render(Renderable<String> component, RenderContext ctx)

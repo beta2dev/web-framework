@@ -1,6 +1,7 @@
 package ru.beta2.wf.html;
 
 import ru.beta2.wf.model.render.RenderContext;
+import ru.beta2.wf.model.render.Renderable;
 import ru.beta2.wf.model.render.Renderer;
 import ru.beta2.wf.util.AttachmentKey;
 
@@ -9,7 +10,7 @@ import ru.beta2.wf.util.AttachmentKey;
  * Date: 14.11.2014
  * Time: 18:28
  */
-public abstract class AbstractHtmlTagRenderer<M> implements Renderer<M>
+public abstract class AbstractHtmlTagRenderer<M, C extends Renderable<M>> implements Renderer<M, C>
 {
 
     private static final AttachmentKey<HtmlTagWriter> HTML_TAG_WRITER_ATTACHMENT_KEY = AttachmentKey.create(HtmlTagWriter.class);
@@ -39,18 +40,18 @@ class HtmlTagWriterImpl implements HtmlTagWriter
     @Override
     public void start(String tag)
     {
-        // todo implement
+        // todo !!! implement
     }
 
     @Override
     public void attr(String name, String value)
     {
-        // todo implement
+        // todo !!! implement
     }
 
     @Override
     public void end(String tag)
     {
-        // todo implement
+        // todo !!! implement
     }
 }

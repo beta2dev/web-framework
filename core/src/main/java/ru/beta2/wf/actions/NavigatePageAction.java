@@ -1,16 +1,18 @@
 package ru.beta2.wf.actions;
 
-import ru.beta2.wf.components.TextContent;
-import ru.beta2.wf.model.flow.CommandResolution;
-import ru.beta2.wf.model.flow.FlowContext;
 import ru.beta2.wf.model.component.Page;
-import ru.beta2.wf.model.render.Renderable;
 import ru.beta2.wf.model.component.Supplier;
+import ru.beta2.wf.model.flow.FlowContext;
+import ru.beta2.wf.model.flow.FlowResolution;
+import ru.beta2.wf.model.render.Renderable;
 
 /**
  * User: Inc
  * Date: 13.11.2014
  * Time: 22:45
+ *
+ * Вообще нам действительно нужно сделать тонкий клиент в смысле обработки логики ответа от сервера (то есть логики взаимодействия с серверов через команды).
+ * То есть клиент в общем виде обрабатывает команды (однообразно отправляет их на сервер) и получая ответ из типизированных частей знает просто как применить эти типизированные части.
  *
  * Render example:
  * <a href="/second-page" id="go-second-page" title="Go second page" class="b2action" data-action="b2nav">go</a>
@@ -27,7 +29,9 @@ import ru.beta2.wf.model.component.Supplier;
 public class NavigatePageAction extends AbstractLinkAction
 {
 
-    // todo !!! include in component lifecycle verification stage (здесь например проверять, что задана страница
+    // todo !!! include in component lifecycle verification stage (здесь например проверять, что задана страница)
+
+    // todo !!! вообще нам нужно две ссылки: 1) в href (для навигации без AJAX, например при открытии ссылки в новом окне)
 
     private Supplier<Page> pageSupplier;
 
@@ -49,6 +53,7 @@ public class NavigatePageAction extends AbstractLinkAction
     {
         return new LinkActionModel()
         {
+            // todo !!! а если параметр(ы) у страницы
             @Override
             public String getHref()
             {
@@ -56,9 +61,9 @@ public class NavigatePageAction extends AbstractLinkAction
             }
 
             @Override
-            public String getAction()
+            public String getActionHref()
             {
-                return "b2nav";
+                return null; // todo !!! implement
             }
 
             @Override
@@ -76,8 +81,9 @@ public class NavigatePageAction extends AbstractLinkAction
     // todo можно сделать так, что будут вообще только одни команды, отображаемые на конкретные pathTemplate (но что делать со страницами по статусу (отдельная тема в билдрезалт) и с командами по техническим URL'ам (наверное все равно стоит их привести к виду /cmd/COMMAND-NAME-IDENTIFIER))
 
     @Override
-    public CommandResolution execute(FlowContext ctx)
+    public FlowResolution execute(FlowContext ctx)
     {
         return null;// todo !!! implement
     }
+
 }

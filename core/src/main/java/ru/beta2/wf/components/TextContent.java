@@ -29,7 +29,7 @@ public class TextContent extends Component<String>
     }
 
     @Override
-    protected Class<? super String> getModelClass()
+    public Class<? super String> getModelClass()
     {
         return String.class;
     }

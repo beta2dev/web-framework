@@ -9,6 +9,6 @@ import ru.beta2.wf.model.render.Renderable;
 public interface LinkActionModel extends ActionModel
 {
     String getHref();
-    String getAction();
+    String getActionHref();
     Renderable<?> getContent();
 }

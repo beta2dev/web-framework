@@ -31,7 +31,10 @@ public class Component<M> extends AbstractAttachable implements Renderable<M>, V
 
     private final AttachmentKey<M> modelKey;
 
-    private Renderer<M> renderer;
+    private Class<M> modelClass;
+    private Supplier<M> modelSupplier;
+
+    private Renderer<M, ? extends Renderable<M>> renderer;
 
     private String name;
 
@@ -43,25 +46,26 @@ public class Component<M> extends AbstractAttachable implements Renderable<M>, V
         this.modelKey = modelClass != null ? AttachmentKey.create(modelClass) : null;
     }
 
-    public Renderer<M> getRenderer()
+    public Renderer<M, Renderable<M>> getRenderer()
     {
-        return renderer;
+        // dirty hack
+        return (Renderer<M, Renderable<M>>) renderer;
     }
 
-    public void setRenderer(Renderer<M> renderer)
+    public void setRenderer(Renderer<M, ? extends Renderable<M>> renderer)
     {
         this.renderer = renderer;
     }
 
-    public Component<M> renderer(Renderer<M> renderer)
+    public Component<M> renderer(Renderer<M, ? extends Renderable<M>> renderer)
     {
         setRenderer(renderer);
         return this;
     }
 
-    public Component<M> wrap(Renderer<M> renderer)
+    public Component<M> wrap(Renderer<M, ? extends Renderable<M>> renderer)
     {
-        setRenderer(new ComponentWrappingRenderer<M>(renderer));
+        setRenderer(new ComponentWrappingRenderer<>(renderer));
         return this;
     }
 
@@ -121,13 +125,18 @@ public class Component<M> extends AbstractAttachable implements Renderable<M>, V
         return model;
     }
 
-    // todo ??? или может быть вообще отказаться от моделей в пользу supplier'ов ?
-    // todo ??? как быть с компонентами - а именно с тем, что их надо бы не через строки рендерить, а через
+    public Component<M> model(Class<M> modelClass, Supplier<M> modelSupplier)
+    {
+        this.modelClass = modelClass;
+        this.modelSupplier = modelSupplier;
+        return this;
+    }
 
     @Override
     public void render(RenderContext ctx)
     {
-        renderer.render(this, ctx);
+        // dirty hack
+        ((Renderer<M, Component<M>>)renderer).render(this, ctx);
     }
 
     @Override
@@ -136,14 +145,24 @@ public class Component<M> extends AbstractAttachable implements Renderable<M>, V
         visitor.visit(this);
     }
 
-    protected Class<? super M> getModelClass()
+    public Class<? super M> getModelClass()
     {
-        return null; // no model by default
+        return modelClass; // no model by default (null)
     }
 
     protected M createModel(FlowContext ctx)
     {
-        return null; // no model by default
+        return modelSupplier != null
+                ? modelSupplier.get(ctx)
+                : null; // no model by default
     }
 
+    @Override
+    public String toString()
+    {
+        return getClass().getName() + "{" +
+                "name='" + name + '\'' +
+                ", id='" + id + '\'' +
+                '}';
+    }
 }

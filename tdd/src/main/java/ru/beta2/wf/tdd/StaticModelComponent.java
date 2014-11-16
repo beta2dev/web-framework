@@ -29,7 +29,7 @@ public class StaticModelComponent extends Component<Map<String, Object>>
     }
 
     @Override
-    protected Class<? super Map<String, Object>> getModelClass()
+    public Class<? super Map<String, Object>> getModelClass()
     {
         return Map.class;
     }

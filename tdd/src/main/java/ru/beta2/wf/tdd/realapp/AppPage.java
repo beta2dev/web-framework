@@ -16,11 +16,11 @@ public class AppPage extends Page<Map<String, Object>>
 {
     public AppPage(String pathTemplate)
     {
-        super(pathTemplate);
+        dispatch(pathTemplate);
     }
 
     @Override
-    protected Class<? super Map<String, Object>> getModelClass()
+    public Class<? super Map<String, Object>> getModelClass()
     {
         return Map.class;
     }

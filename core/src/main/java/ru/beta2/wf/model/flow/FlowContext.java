@@ -1,6 +1,6 @@
 package ru.beta2.wf.model.flow;
 
-import ru.beta2.wf.model.render.OutputBuffer;
+import ru.beta2.wf.model.render.RenderContext;
 import ru.beta2.wf.util.Attachable;
 
 import java.util.Deque;

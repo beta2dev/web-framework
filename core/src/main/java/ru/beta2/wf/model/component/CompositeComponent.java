@@ -1,5 +1,6 @@
 package ru.beta2.wf.model.component;
 
+import ru.beta2.wf.model.render.Renderable;
 import ru.beta2.wf.model.render.Renderer;
 
 import java.util.ArrayList;
@@ -77,7 +78,7 @@ public class CompositeComponent<M> extends Component<M> implements HasChildren
     //
 
     @Override
-    public CompositeComponent<M> renderer(Renderer renderer)
+    public CompositeComponent<M> renderer(Renderer<M, ? extends Renderable<M>> renderer)
     {
         super.renderer(renderer);
         return this;

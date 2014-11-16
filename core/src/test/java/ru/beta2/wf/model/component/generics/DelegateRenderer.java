@@ -1,4 +1,6 @@
-package ru.beta2.wf.model.render;
+package ru.beta2.wf.model.component.generics;
+
+import ru.beta2.wf.model.render.RenderContext;
 
 /**
  * User: Inc

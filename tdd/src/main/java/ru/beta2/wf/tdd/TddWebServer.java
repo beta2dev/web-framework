@@ -4,10 +4,14 @@ import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.NameVirtualHostHandler;
 import ru.beta2.wf.flow.ApplicationHttpHandler;
+import ru.beta2.wf.model.build.ApplicationBuilder;
+import ru.beta2.wf.model.build.BuildResult;
+import ru.beta2.wf.model.build.DefaultApplicationBuilder;
 import ru.beta2.wf.model.component.Application;
 import ru.beta2.wf.model.component.Component;
 import ru.beta2.wf.model.component.CompositeComponent;
 import ru.beta2.wf.model.component.Page;
+import ru.beta2.wf.model.flow.FlowController;
 import ru.beta2.wf.tdd.realapp.RealAppBuilder;
 
 /**
@@ -20,6 +24,15 @@ public class TddWebServer
     public static void main(String[] args)
     {
         new TddWebServer().run();
+    }
+
+    private final FlowController flowController;
+    private final ApplicationBuilder appBuilder;
+
+    public TddWebServer()
+    {
+        this.flowController = new FlowController();
+        this.appBuilder = new DefaultApplicationBuilder();
     }
 
     private void run()
@@ -36,20 +49,34 @@ public class TddWebServer
         NameVirtualHostHandler virtualHostHandler = new NameVirtualHostHandler();
 
         // default app
-        virtualHostHandler.setDefaultHandler(new ApplicationHttpHandler(buildApp()));
+        virtualHostHandler.setDefaultHandler(createHttpHandler(buildSimpleApp()));
 
         // custom-error-pages
-        virtualHostHandler.addHost("custom-error-pages", new ApplicationHttpHandler(buildCustomErrorPagesApp()));
+        virtualHostHandler.addHost("custom-error-pages", createHttpHandler(buildCustomErrorPagesApp()));
 
         // real-app
-        virtualHostHandler.addHost("real-app", new ApplicationHttpHandler(buildRealApp()));
+        virtualHostHandler.addHost("real-app", createHttpHandler(buildRealApp()));
 
         return virtualHostHandler;
     }
 
-    private Application buildApp()
+    private HttpHandler createHttpHandler(Application app)
+    {
+        System.out.println("Build app: " + app);
+        BuildResult res = appBuilder.build(app);
+        System.out.println("WARNINGS: " + res.getWarnings());
+        System.out.println("ERRORS: " + res.getErrors());
+        if (!res.isPassed()) {
+            throw new RuntimeException("Build is not passed");
+        }
+
+        return new ApplicationHttpHandler(flowController, res.getCommands());
+    }
+
+    private Application buildSimpleApp()
     {
         Application app = new Application();
+        app.name("SimpleApp");
         app.addPages(
                 new SimplePage("/", "This is index page"),
                 new SimplePage("/aaa/bbb", "Bbb page"),
@@ -58,11 +85,14 @@ public class TddWebServer
                 new TemplatePage("/page-template", "AAA: ${aaa}, BBB: ${bbb}")
         );
 
-        Page pageWithBlock = new Page("/page-with-block").renderer(new ComponentsRenderer("page"));
-        pageWithBlock.addChild(new Component().renderer(new ComponentsRenderer("block")));
+        Page pageWithBlock = new Page<>()
+                .dispatch("/page-with-block")
+                .renderer(new ComponentsRenderer("page"))
+                .child(new Component<>().renderer(new ComponentsRenderer("block")))
+                ;
         app.addPage(pageWithBlock);
 
-        Page pageWithInnerBlocks = new Page("/page-with-inner-blocks").renderer(new ComponentsRenderer("page"));
+        Page pageWithInnerBlocks = new Page().dispatch("/page-with-inner-blocks").renderer(new ComponentsRenderer("page"));
         CompositeComponent blockA = new CompositeComponent().renderer(new ComponentsRenderer("block-a"));
         CompositeComponent blockB = new CompositeComponent().renderer(new ComponentsRenderer("block-b"));
         CompositeComponent blockC = new CompositeComponent().renderer(new ComponentsRenderer("block-c"));
@@ -70,7 +100,7 @@ public class TddWebServer
         blockA.addChild(blockC);
         app.addPage(pageWithInnerBlocks);
 
-        Page pageNamedComponents = new Page("/named-components").renderer(new TplRenderer("[BBB:#{bbb}] [AAA:#{aaa}]"));
+        Page pageNamedComponents = new Page().dispatch("/named-components").renderer(new TplRenderer("[BBB:#{bbb}] [AAA:#{aaa}]"));
         pageNamedComponents.addChildren(
                 new Component<>().renderer(new ComponentsRenderer("block-a")).name("aaa"),
                 new Component<>().renderer(new ComponentsRenderer("block-b")).name("bbb")
@@ -89,6 +119,7 @@ public class TddWebServer
     private Application buildCustomErrorPagesApp()
     {
         Application app = new Application();
+        app.name("CustomErrorPages");
         app.addPage(new SimplePage(404, "404 PAGE NOT FOUND"));
         return app;
     }

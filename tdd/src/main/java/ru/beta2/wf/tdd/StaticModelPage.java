@@ -16,7 +16,7 @@ public class StaticModelPage extends Page<Map<String,Object>>
 
     public StaticModelPage(String pathTemplate)
     {
-        super(pathTemplate);
+        dispatch(pathTemplate);
     }
 
     public StaticModelPage put(String key, Object value)
@@ -32,7 +32,7 @@ public class StaticModelPage extends Page<Map<String,Object>>
     }
 
     @Override
-    protected Class<? super Map<String, Object>> getModelClass()
+    public Class<? super Map<String, Object>> getModelClass()
     {
         return Map.class;
     }

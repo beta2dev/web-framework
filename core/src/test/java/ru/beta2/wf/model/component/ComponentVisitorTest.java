@@ -2,8 +2,6 @@ package ru.beta2.wf.model.component;
 
 import org.junit.Assert;
 import org.junit.Test;
-import ru.beta2.wf.model.flow.CommandResolution;
-import ru.beta2.wf.model.flow.FlowContext;
 
 /**
  * User: Inc
@@ -39,9 +37,9 @@ public class ComponentVisitorTest
 
     public static class DummyAction extends Action {
         @Override
-        public CommandResolution execute(FlowContext ctx)
+        public String getActionHandler()
         {
-            return null;
+            return "dummy";
         }
     }
 

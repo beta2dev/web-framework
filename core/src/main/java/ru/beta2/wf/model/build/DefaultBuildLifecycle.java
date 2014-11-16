@@ -1,9 +1,6 @@
 package ru.beta2.wf.model.build;
 
-import ru.beta2.wf.model.build.stages.AssignRendererStage;
-import ru.beta2.wf.model.build.stages.BuildUpStage;
-import ru.beta2.wf.model.build.stages.GenerateIdStage;
-import ru.beta2.wf.model.build.stages.VerifyStage;
+import ru.beta2.wf.model.build.stages.*;
 
 /**
  * User: Inc
@@ -28,6 +25,8 @@ public class DefaultBuildLifecycle implements BuildLifecycle
                 return new AssignRendererStage(ctx);
             case 4:
                 return new VerifyStage(ctx);
+            case 5:
+                return new GatherCommandsStage(ctx);
         }
         return null;
     }

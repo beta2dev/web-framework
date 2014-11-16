@@ -23,6 +23,12 @@ public class VerifyStage extends AbstractStage
     }
 
     @Override
+    public boolean isPassed()
+    {
+        return !ctx.hasErrors();
+    }
+
+    @Override
     public void visit(Application app)
     {
         verify(app);

@@ -1,6 +1,7 @@
 package ru.beta2.wf.model.build;
 
 import ru.beta2.wf.model.component.Component;
+import ru.beta2.wf.model.flow.FlowLifecycle;
 import ru.beta2.wf.model.render.Renderer;
 
 /**
@@ -12,5 +13,8 @@ public interface BuildServices
 {
     String generateId();
 
-    <M> Renderer<M> getRendererForComponent(Component<M> component);
+    <M, C extends Component<M>> Renderer<M, C> getRendererForComponent(C component);
+
+    FlowLifecycle getFlowLifecycle();
+
 }

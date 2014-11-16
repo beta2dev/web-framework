@@ -2,7 +2,6 @@ package ru.beta2.wf.model.component;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * 09.11.2014
@@ -11,10 +10,25 @@ import java.util.Collections;
 public class Application implements Visitable
 {
 
+    private String name;
+
     private final Collection<Page<?>> pages = new ArrayList<>();
 
-    // todo !!! maybe implement
-//    private Renderer defaultRenderer;
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public Application name(String name)
+    {
+        this.name = name;
+        return this;
+    }
 
     public void addPage(Page<?> page)
     {
@@ -47,5 +61,13 @@ public class Application implements Visitable
         for (Page p : pages) {
             p.accept(visitor);
         }
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Application{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }

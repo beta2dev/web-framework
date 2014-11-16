@@ -9,4 +9,7 @@ import ru.beta2.wf.model.component.ComponentVisitor;
  */
 public interface BuildStage extends ComponentVisitor
 {
+
+    boolean isPassed();
+
 }

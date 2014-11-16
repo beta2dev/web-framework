@@ -5,6 +5,8 @@ import ru.beta2.wf.model.component.Action;
 import ru.beta2.wf.model.component.Application;
 import ru.beta2.wf.model.component.Component;
 import ru.beta2.wf.model.component.Page;
+import ru.beta2.wf.model.render.Renderable;
+import ru.beta2.wf.model.render.Renderer;
 
 /**
  * User: Inc
@@ -47,8 +49,14 @@ public class AssignRendererStage extends AbstractStage
 
     private <M> void assignRenderer(Component<M> component)
     {
-        if (component.getRenderer() != null) {
-            component.setRenderer(ctx.getRendererForComponent(component));
+        if (component.getRenderer() == null) {
+            Renderer<M, ? extends Renderable<M>> renderer = ctx.getRendererForComponent(component);
+            if (renderer != null) {
+                component.setRenderer(renderer);
+            }
+            else {
+                ctx.addError("Renderer is not assigned for component: " + component);
+            }
         }
     }
 
