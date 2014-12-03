@@ -46,10 +46,9 @@ public class Component<M> extends AbstractAttachable implements Renderable<M>, V
         this.modelKey = modelClass != null ? AttachmentKey.create(modelClass) : null;
     }
 
-    public Renderer<M, Renderable<M>> getRenderer()
+    public Renderer<M, ? extends Renderable<M>> getRenderer()
     {
-        // dirty hack
-        return (Renderer<M, Renderable<M>>) renderer;
+        return renderer;
     }
 
     public void setRenderer(Renderer<M, ? extends Renderable<M>> renderer)
@@ -61,6 +60,11 @@ public class Component<M> extends AbstractAttachable implements Renderable<M>, V
     {
         setRenderer(renderer);
         return this;
+    }
+
+    public boolean isRendererRequired()
+    {
+        return renderer == null;
     }
 
     public Component<M> wrap(Renderer<M, ? extends Renderable<M>> renderer)
@@ -77,7 +81,6 @@ public class Component<M> extends AbstractAttachable implements Renderable<M>, V
         return wrap(renderer);
     }
 
-    @Override
     public String getName()
     {
         return name;
@@ -94,7 +97,6 @@ public class Component<M> extends AbstractAttachable implements Renderable<M>, V
         return this;
     }
 
-    @Override
     public String getId()
     {
         return id;
@@ -112,6 +114,18 @@ public class Component<M> extends AbstractAttachable implements Renderable<M>, V
     }
 
     @Override
+    public String getRenderId()
+    {
+        return getId();
+    }
+
+    @Override
+    public String getRenderName()
+    {
+        return getName();
+    }
+
+    @Override
     public M getModel(FlowContext ctx)
     {
         if (modelKey == null) {
@@ -125,6 +139,12 @@ public class Component<M> extends AbstractAttachable implements Renderable<M>, V
         return model;
     }
 
+    @Override
+    public Renderable<?> getComponent(String name)
+    {
+        return null; // no subcomponents in component
+    }
+
     public Component<M> model(Class<M> modelClass, Supplier<M> modelSupplier)
     {
         this.modelClass = modelClass;
@@ -134,6 +154,11 @@ public class Component<M> extends AbstractAttachable implements Renderable<M>, V
 
     @Override
     public void render(RenderContext ctx)
+    {
+        render(renderer, ctx);
+    }
+
+    protected void render(Renderer<?, ? extends Renderable<?>> renderer, RenderContext ctx)
     {
         // dirty hack
         ((Renderer<M, Component<M>>)renderer).render(this, ctx);

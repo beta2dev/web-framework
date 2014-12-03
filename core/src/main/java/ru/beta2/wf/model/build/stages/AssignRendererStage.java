@@ -49,7 +49,7 @@ public class AssignRendererStage extends AbstractStage
 
     private <M> void assignRenderer(Component<M> component)
     {
-        if (component.getRenderer() == null) {
+        if (component.isRendererRequired()) {
             Renderer<M, ? extends Renderable<M>> renderer = ctx.getRendererForComponent(component);
             if (renderer != null) {
                 component.setRenderer(renderer);

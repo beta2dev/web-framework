@@ -3,6 +3,8 @@ package ru.beta2.wf.tdd;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.NameVirtualHostHandler;
+import ru.beta2.wf.components.TextContent;
+import ru.beta2.wf.components.TextContentRenderer;
 import ru.beta2.wf.flow.ApplicationHttpHandler;
 import ru.beta2.wf.model.build.ApplicationBuilder;
 import ru.beta2.wf.model.build.BuildResult;
@@ -27,12 +29,13 @@ public class TddWebServer
     }
 
     private final FlowController flowController;
-    private final ApplicationBuilder appBuilder;
+    private final DefaultApplicationBuilder appBuilder;
 
     public TddWebServer()
     {
         this.flowController = new FlowController();
         this.appBuilder = new DefaultApplicationBuilder();
+        appBuilder.registerRendererForComponent(TextContent.class, new TextContentRenderer());
     }
 
     private void run()

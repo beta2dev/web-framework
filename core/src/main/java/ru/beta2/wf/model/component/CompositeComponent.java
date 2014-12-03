@@ -12,7 +12,7 @@ import java.util.List;
  * Date: 10.11.2014
  * Time: 17:10
  */
-public class CompositeComponent<M> extends Component<M> implements HasChildren
+public class CompositeComponent<M> extends Component<M>
 {
 
     private List<Component<?>> children;
@@ -38,7 +38,6 @@ public class CompositeComponent<M> extends Component<M> implements HasChildren
         return this;
     }
 
-//    @Override
     public List<Component<?>> getChildren()
     {
         if (children == null) {
@@ -47,7 +46,6 @@ public class CompositeComponent<M> extends Component<M> implements HasChildren
         return children;
     }
 
-    @Override
     public Component<?> getChildByName(String name)
     {
         // todo !!! ??? maybe optimize
@@ -57,6 +55,12 @@ public class CompositeComponent<M> extends Component<M> implements HasChildren
             }
         }
         return null;
+    }
+
+    @Override
+    public Renderable<?> getComponent(String name)
+    {
+        return getChildByName(name);
     }
 
     @Override

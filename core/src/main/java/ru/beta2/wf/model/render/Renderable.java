@@ -11,11 +11,13 @@ import ru.beta2.wf.util.Attachable;
 public interface Renderable<M> extends Attachable
 {
 
-    String getId();
+    String getRenderId();
 
-    String getName();
+    String getRenderName(); // todo ??? или может быть оставить здесь и getId(), а вместо getName() что-то типа getSkinName() ?
 
     M getModel(FlowContext ctx);
+
+    Renderable<?> getComponent(String name);
 
     void render(RenderContext ctx);
 

@@ -11,6 +11,8 @@ import ru.beta2.wf.model.render.Renderer;
 public class Layout<M> extends CompositeComponent<M>
 {
 
+    // todo ??? нужны ли нам иерархические лэйауты ? (если да - то скорее всего нужно делать Layout базовым классом для Page и выносить туда функционал использования Layout'a
+
     //
     // Override for type refinement
     //

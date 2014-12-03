@@ -3,7 +3,6 @@ package ru.beta2.wf.tdd;
 import org.apache.commons.lang3.text.StrLookup;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import ru.beta2.wf.model.render.OutputBuffer;
-import ru.beta2.wf.model.component.HasChildren;
 import ru.beta2.wf.model.render.RenderContext;
 import ru.beta2.wf.model.render.Renderable;
 import ru.beta2.wf.model.render.Renderer;
@@ -25,27 +24,29 @@ public class TplRenderer implements Renderer<Map<String, Object>, Renderable<Map
     }
 
     @Override
-    public void render(Renderable<Map<String, Object>> component, RenderContext ctx)
+    public void render(Renderable<Map<String, Object>> renderable, RenderContext ctx)
     {
-        StrSubstitutor str = new StrSubstitutor(component.getModel(ctx));
-        String result = str.replace(getTemplateSource(component, template));
-        if (component instanceof HasChildren) {
+        Map<String, Object> model = renderable.getModel(ctx);
+        System.out.println("RENDER: " + renderable.getRenderName() + ", MODEL: " + model);
+        StrSubstitutor str = new StrSubstitutor(model);
+        String result = str.replace(getTemplateSource(renderable, template));
+//        if (renderable instanceof HasChildren) {
             StrSubstitutor str2 = new StrSubstitutor(new StrLookup<Object>()
             {
                 @Override
                 public String lookup(String key)
                 {
-                    Renderable child = ((HasChildren) component).getChildByName(key);
+                    Renderable child = renderable.getComponent(key);
                     if (child != null) {
                         OutputBuffer b = ctx.startBuffering();
                         child.render(ctx);
                         return b.stopAndGet();
                     }
-                    return "!!! COMPONENT NOT FOUND by key '" + key + "'";
+                    return "!!! COMPONENT NOT FOUND by key '" + key + "' !!!";
                 }
             }, "#{", "}", '#');
             result = str2.replace(result);
-        }
+//        }
         ctx.write(result);
     }
 

@@ -12,9 +12,9 @@ import ru.beta2.wf.model.render.RenderContext;
 public class LinkActionRenderer extends AbstractHtmlTagRenderer<LinkActionModel, AbstractLinkAction>
 {
     @Override
-    public void render(AbstractLinkAction component, RenderContext ctx)
+    public void render(AbstractLinkAction renderable, RenderContext ctx)
     {
-        LinkActionModel model = component.getModel(ctx);
+        LinkActionModel model = renderable.getModel(ctx);
         HtmlTagWriter wr = getHtmlTagWriter(ctx);
         wr.start("a");
 
@@ -32,7 +32,7 @@ public class LinkActionRenderer extends AbstractHtmlTagRenderer<LinkActionModel,
 
         wr.attr("href", model.getHref());
         wr.attr("data-href", model.getActionHref());
-        wr.attr("data-action", component.getActionHandler());
+        wr.attr("data-action", renderable.getActionHandler());
 
         model.getContent().render(ctx);
         wr.end("a");

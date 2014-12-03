@@ -4,7 +4,6 @@ import ru.beta2.wf.model.component.Application;
 import ru.beta2.wf.model.component.Component;
 import ru.beta2.wf.model.flow.Command;
 import ru.beta2.wf.model.flow.FlowLifecycle;
-import ru.beta2.wf.model.render.Renderable;
 import ru.beta2.wf.model.render.Renderer;
 import ru.beta2.wf.util.AbstractAttachable;
 

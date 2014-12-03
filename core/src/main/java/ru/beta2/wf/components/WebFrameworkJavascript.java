@@ -34,4 +34,10 @@ public class WebFrameworkJavascript extends Component<Void>
 //        ctx.write("<script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-2.1.1.min.js\"></script>\n");
         ctx.write("<script type=\"text/javascript\">\n" + javascriptCode + "\n</script>");
     }
+
+    @Override
+    public boolean isRendererRequired()
+    {
+        return false;
+    }
 }

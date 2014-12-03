@@ -7,6 +7,6 @@ package ru.beta2.wf.model.render;
 public interface Renderer<M, C extends Renderable<M>>
 {
 
-    void render(C component, RenderContext ctx);
+    void render(C renderable, RenderContext ctx);
 
 }

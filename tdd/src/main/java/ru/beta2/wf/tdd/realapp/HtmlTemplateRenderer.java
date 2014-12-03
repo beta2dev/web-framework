@@ -23,12 +23,12 @@ public class HtmlTemplateRenderer extends TplRenderer
     @Override
     protected String getTemplateSource(Renderable component, String template)
     {
-        template = "/" + template + "/" + component.getName() + ".html";
+        template = "/" + template + "/" + component.getRenderName() + ".html";
         System.out.println("HTML-TPL: " + template);
         try {
             InputStream stream = getClass().getResourceAsStream(template);
             if (stream == null) {
-                throw new RuntimeException("Template resource '" + template + "' not found (component '" + component.getName() + "')");
+                throw new RuntimeException("Template resource '" + template + "' not found (renderable '" + component.getRenderName() + "')");
             }
             return IOUtils.toString(stream, "UTF-8");
         }

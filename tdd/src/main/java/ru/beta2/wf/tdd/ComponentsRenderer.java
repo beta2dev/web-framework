@@ -22,11 +22,11 @@ public class ComponentsRenderer implements Renderer
     }
 
     @Override
-    public void render(Renderable component, RenderContext ctx)
+    public void render(Renderable renderable, RenderContext ctx)
     {
         ctx.write("<" + name + ">");
-        if (component instanceof CompositeComponent) {
-            for (Component c : ((CompositeComponent<?>) component).getChildren()) {
+        if (renderable instanceof CompositeComponent) {
+            for (Component c : ((CompositeComponent<?>) renderable).getChildren()) {
                 c.render(ctx);
             }
         }

@@ -2,6 +2,7 @@ package ru.beta2.wf.model.component;
 
 import ru.beta2.wf.model.flow.Dispatch;
 import ru.beta2.wf.model.flow.Dispatched;
+import ru.beta2.wf.model.flow.FlowContext;
 import ru.beta2.wf.model.render.RenderContext;
 import ru.beta2.wf.model.render.Renderable;
 import ru.beta2.wf.model.render.Renderer;
@@ -16,24 +17,32 @@ import java.util.Map;
 public class Page<M> extends CompositeComponent<M> implements Dispatched
 {
 
+    // todo !!! реализовать возможность для случая с layout делать шаблоны непосредственно для страницы и в шаблоне уже указывать "layoutBindings"
+
     private Dispatch dispatch;
 
-    private LayoutJoint<?> layoutJoint;
+    private Layout<M> layout;
 
     private Map<String, Component<?>> layoutBindings;
 
-    // todo !!! on verify phase check that dispatch exists
-
-
+    // todo !!! ??? on verify phase check that dispatch exists
 
     // todo !!! еще нам нужно как-то смоделировать, что при навигации между страницами только часть блоков по идее должна быть перерисована (то есть нужно ввести некую иерархию композиции страниц)
-    public Page<M> layout(Layout<?> layout)
+    public Page<M> layout(Layout<M> layout)
     {
-        if (layoutBindings == null) {
-            layoutBindings = new HashMap<>();
-        }
-        this.layoutJoint = new LayoutJoint<>(layout, layoutBindings);
+        this.layout = layout;
         return this;
+    }
+
+    public Layout<?> getLayout()
+    {
+        return layout;
+    }
+
+    @Override
+    public String getRenderName()
+    {
+        return layout != null ? layout.getRenderName() : super.getRenderName(); // todo ??? может быть вынести стратегию и ее два варианта: layout == null или layout != null
     }
 
     public void addChild(Component<?> component, String layoutSlot)
@@ -46,10 +55,29 @@ public class Page<M> extends CompositeComponent<M> implements Dispatched
     }
 
     @Override
+    public Renderable<?> getComponent(String name)
+    {
+        Renderable<?> c;
+        if (layoutBindings != null) {
+            c = layoutBindings.get(name);
+            if (c != null) {
+                return c;
+            }
+        }
+        if (layout != null) {
+            c = layout.getComponent(name);
+            if (c != null) {
+                return c;
+            }
+        }
+        return super.getComponent(name);
+    }
+
+    @Override
     public void render(RenderContext ctx)
     {
-        if (layoutJoint != null) {
-            layoutJoint.render(ctx);
+        if (layout != null) {
+            render(layout.getRenderer(), ctx);
         }
         else {
             super.render(ctx);
@@ -57,14 +85,15 @@ public class Page<M> extends CompositeComponent<M> implements Dispatched
     }
 
     @Override
-    public Renderer<M, Renderable<M>> getRenderer()
+    public boolean isRendererRequired()
     {
-        if (layoutJoint != null) {
-            return layoutJoint.render(ctx);
-        }
-        else {
-            super.render(ctx);
-        }
+        return layout == null && super.isRendererRequired();
+    }
+
+    @Override
+    public M getModel(FlowContext ctx)
+    {
+        return layout != null ? layout.getModel(ctx) : super.getModel(ctx); // todo DEFFERED maybe implement models merge ability
     }
 
     @Override

@@ -2,6 +2,8 @@ package ru.beta2.wf.model.component;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 
 /**
  * 09.11.2014
@@ -13,6 +15,8 @@ public class Application implements Visitable
     private String name;
 
     private final Collection<Page<?>> pages = new ArrayList<>();
+
+    private Collection<Layout<?>> layouts;
 
     public String getName()
     {
@@ -33,6 +37,9 @@ public class Application implements Visitable
     public void addPage(Page<?> page)
     {
         pages.add(page);
+        if (page.getLayout() != null) {
+            addLayout(page.getLayout());
+        }
     }
 
     public Application page(Page<?> page)
@@ -58,6 +65,10 @@ public class Application implements Visitable
     {
         visitor.visit(this);
 
+        for (Layout l : getLayouts()) {
+            l.accept(visitor);
+        }
+
         for (Page p : pages) {
             p.accept(visitor);
         }
@@ -69,5 +80,25 @@ public class Application implements Visitable
         return "Application{" +
                 "name='" + name + '\'' +
                 '}';
+    }
+
+    //
+    //  Implementation details
+    //
+
+    private void addLayout(Layout<?> layout)
+    {
+        if (layouts == null) {
+            layouts = new HashSet<>();
+        }
+        layouts.add(layout);
+    }
+
+    private Collection<Layout<?>> getLayouts()
+    {
+        if (layouts == null) {
+            return Collections.emptySet();
+        }
+        return layouts;
     }
 }

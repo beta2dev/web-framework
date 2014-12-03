@@ -13,10 +13,10 @@ public class ComponentWrappingRenderer<M, C extends Renderable<M>> extends Deleg
     }
 
     @Override
-    public void render(C component, RenderContext ctx)
+    public void render(C renderable, RenderContext ctx)
     {
-        ctx.write("<div class=\"b2wrap\" data-wrap-id=\"" + component.getId() + "\">");
-        renderDelegate(component, ctx);
+        ctx.write("<div class=\"b2wrap\" data-wrap-id=\"" + renderable.getRenderId() + "\">");
+        renderDelegate(renderable, ctx);
         ctx.write("</div>");
     }
 

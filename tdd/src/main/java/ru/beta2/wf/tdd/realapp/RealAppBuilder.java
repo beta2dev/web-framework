@@ -40,6 +40,7 @@ public class RealAppBuilder
             {
                 HashMap<String, Object> model = new HashMap<>();
                 model.put("staticRandomContent", "WasGenerated-" + RandomStringUtils.randomAlphanumeric(30));
+                System.out.println("MODEL CREATED: " + model);
                 return model;
             }
         }
@@ -48,10 +49,11 @@ public class RealAppBuilder
 
         layout.addChild(new WebFrameworkJavascript().name("frameworkJavaScript"));
 
-        Page<?> p2 = new Page<>().dispatch("/second-page").name("second-page").layout(layout);
+        Page<Map<String, Object>> p2 = new Page<Map<String, Object>>().dispatch("/second-page").name("second-page").layout(layout);
         p2.addChild(new StaticModelComponent().name("secondPageBlock").renderer(renderer), "dummyBlock");
 
-        Page<?> p1 = new StaticModelPage("/first-page")
+        Page<?> p1 = new Page<Map<String, Object>>()
+            .dispatch("/first-page")
             .name("first-page")
             .layout(layout);
         NavigatePageAction nav = new NavigatePageAction();

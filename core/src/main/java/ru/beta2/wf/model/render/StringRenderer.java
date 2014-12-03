@@ -8,8 +8,8 @@ package ru.beta2.wf.model.render;
 public class StringRenderer implements Renderer<String, Renderable<String>>
 {
     @Override
-    public void render(Renderable<String> component, RenderContext ctx)
+    public void render(Renderable<String> renderable, RenderContext ctx)
     {
-        ctx.write(component.getModel(ctx));
+        ctx.write(renderable.getModel(ctx));
     }
 }
